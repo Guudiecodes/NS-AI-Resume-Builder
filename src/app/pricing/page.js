@@ -8,10 +8,10 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const PLANS = [
-  { id: "basic", name: "Basic Pack", price: "$5", credits: 100, description: "Perfect for testing custom prompts and exploring styles." },
-  { id: "standard", name: "Standard Pack", price: "$10", credits: 250, description: "Ideal for regular creators wanting high resolution outputs." },
-  { id: "pro", name: "Professional Pack", price: "$20", credits: 600, description: "Designed for power users demanding batch exports and high speed.", popular: true },
-  { id: "business", name: "Business Pack", price: "$50", credits: 2000, description: "Maximum value pack for agency workflows and large volume generations." }
+  { id: "basic", name: "Starter Pack", price: "$2", generations: 5, description: "Try it out — perfect for polishing a single resume." },
+  { id: "standard", name: "Popular Pack", price: "$5", generations: 15, description: "Great for active job seekers tailoring resumes to multiple roles.", popular: true },
+  { id: "pro", name: "Pro Pack", price: "$12", generations: 40, description: "For power users who want plenty of room to iterate." },
+  { id: "business", name: "Business Pack", price: "$30", generations: 120, description: "Best value — ideal for career coaches and recruiters." }
 ];
 
 export default function Pricing() {
@@ -52,7 +52,7 @@ export default function Pricing() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">Buy Credits Packs</h1>
           <p className="text-xs sm:text-sm text-secondary-text max-w-lg leading-relaxed">
-            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits — we handle AI infrastructure.
+            Purchase flexible credit packages to generate AI-optimized resumes. No subscription, credits never expire.
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export default function Pricing() {
                 </div>
                 
                 <div className="text-xs bg-bg-page/50 border border-divider/30 p-3 rounded text-center font-extrabold text-primary">
-                  {plan.credits} Art Credits
+                  {plan.generations} Resume Generations
                 </div>
 
                 <p className="text-xs text-secondary-text leading-relaxed font-medium min-h-[3rem]">{plan.description}</p>
@@ -86,11 +86,11 @@ export default function Pricing() {
                 <ul className="space-y-2 border-t border-divider/30 pt-4 text-xs font-semibold text-secondary-text">
                   <li className="flex items-center gap-2">
                     <FaCheck className="text-primary text-[10px]" />
-                    <span>Dynamic aspect ratios</span>
+                    <span>AI-optimized resume rewrites</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <FaCheck className="text-primary text-[10px]" />
-                    <span>HD image downloads</span>
+                    <span>PDF & Word export</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <FaCheck className="text-primary text-[10px]" />
