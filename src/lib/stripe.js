@@ -6,5 +6,5 @@ const apiKey = config.stripe.secretKey && config.stripe.secretKey.trim() !== ""
   : "sk_test_placeholder_key_for_build_purposes";
 
 export const stripe = new Stripe(apiKey, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2026-08-26.dahlia",
 });
