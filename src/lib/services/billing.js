@@ -15,6 +15,10 @@ export const BillingService = {
             product_data: {
               name: `${config.stripe.plans[planId].name}`,
               description: `Purchase ${plan.credits} credits to perform AI generations.`,
+              // Required by Stripe Managed Payments to classify the product for tax purposes.
+              // Verify in Dashboard → Product catalog → Create product that this code shows
+              // "Eligible for Managed Payments"; if not, fall back to "txcd_10103000".
+              tax_code: "txcd_10105001",
             },
             unit_amount: plan.price,
           },
