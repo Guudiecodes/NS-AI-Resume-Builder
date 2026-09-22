@@ -3,24 +3,55 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Footer from "@/components/Footer";
-import { FaCheck, FaInfoCircle } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const PLANS = [
-  { id: "basic", name: "Starter Pack", price: "$2", generations: 5, description: "Try it out — perfect for polishing a single resume." },
-  { id: "standard", name: "Popular Pack", price: "$5", generations: 15, description: "Great for active job seekers tailoring resumes to multiple roles.", popular: true },
-  { id: "pro", name: "Pro Pack", price: "$12", generations: 40, description: "For power users who want plenty of room to iterate." },
-  { id: "business", name: "Business Pack", price: "$30", generations: 120, description: "Best value — ideal for career coaches and recruiters." }
+  {
+    id: "basic",
+    name: "Starter",
+    price: "$2",
+    perResume: "$0.40 / resume",
+    generations: 5,
+    description: "Try it out on a single resume.",
+  },
+  {
+    id: "standard",
+    name: "Popular",
+    price: "$5",
+    perResume: "$0.33 / resume",
+    generations: 15,
+    description: "For active job seekers tailoring resumes to multiple roles.",
+    popular: true,
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    price: "$12",
+    perResume: "$0.30 / resume",
+    generations: 40,
+    description: "For power users who want room to iterate.",
+  },
+  {
+    id: "business",
+    name: "Business",
+    price: "$30",
+    perResume: "$0.25 / resume",
+    generations: 120,
+    description: "Best value for career coaches and recruiters.",
+  },
 ];
 
+const FEATURES = ["AI-optimized resume rewrites", "PDF & Word export", "No subscription required"];
+
 export default function Pricing() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [loadingPlan, setLoadingPlan] = useState(null);
 
   const handleCheckout = async (planId) => {
     if (status !== "authenticated") {
-      toast.error("You must sign in with Google to purchase credit packages.");
+      toast.error("Sign in with Google to purchase credits.");
       return;
     }
 
@@ -34,83 +65,87 @@ export default function Pricing() {
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.error || "Failed to trigger Stripe checkout session.");
+      toast.error(err.response?.data?.error || "Couldn't start checkout. Try again.");
     } finally {
       setLoadingPlan(null);
     }
   };
 
   return (
-    <div className="flex min-h-dvh flex-col bg-bg-page select-none text-primary-text overflow-hidden">
+    <div className="flex min-h-dvh flex-col bg-bg-page text-primary-text overflow-hidden">
       <Toaster position="top-right" />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-12 sm:px-6 lg:px-8 flex flex-col gap-10 overflow-y-auto scrollbar-subtle items-center">
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full mb-1">
-            <FaInfoCircle className="text-primary text-xs" />
-            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Pricing Plans</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">Buy Credits Packs</h1>
-          <p className="text-xs sm:text-sm text-secondary-text max-w-lg leading-relaxed">
-            Purchase flexible credit packages to generate AI-optimized resumes. No subscription, credits never expire.
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col gap-12 items-center overflow-y-auto scrollbar-subtle">
+        <div className="text-center space-y-3 max-w-lg">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Buy resume credits</h1>
+          <p className="text-sm text-secondary-text leading-relaxed">
+            One-time credit packs power AI resume generations. No subscription, and credits never expire.
           </p>
         </div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
-              className={`relative bg-bg-card border rounded-lg p-6 flex flex-col justify-between gap-6 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
-                plan.popular ? "border-primary shadow-xl shadow-primary/5 scale-105" : "border-divider/50 shadow-md"
+              className={`relative flex flex-col rounded-2xl border overflow-hidden transition-transform duration-300 hover:-translate-y-1 ${
+                plan.popular
+                  ? "border-primary shadow-xl shadow-primary/10"
+                  : "border-divider/60 bg-bg-card"
               }`}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[9px] font-black uppercase px-3 py-1 rounded-full tracking-wider shadow">
-                  Most Popular
+                <span className="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-full tracking-wide">
+                  Most popular
                 </span>
               )}
 
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-extrabold uppercase tracking-wide text-primary-text">{plan.name}</h3>
-                  <p className="text-2xl font-black tracking-tight text-white">{plan.price}</p>
+              <div className={`p-6 pb-5 ${plan.popular ? "bg-primary/10" : ""}`}>
+                <p className="text-xs font-bold uppercase tracking-wide text-secondary-text">
+                  {plan.name}
+                </p>
+                <div className="mt-2">
+                  <span className="text-4xl font-black tracking-tight">{plan.price}</span>
                 </div>
-                
-                <div className="text-xs bg-bg-page/50 border border-divider/30 p-3 rounded text-center font-extrabold text-primary">
-                  {plan.generations} Resume Generations
-                </div>
-
-                <p className="text-xs text-secondary-text leading-relaxed font-medium min-h-[3rem]">{plan.description}</p>
-                
-                <ul className="space-y-2 border-t border-divider/30 pt-4 text-xs font-semibold text-secondary-text">
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>AI-optimized resume rewrites</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>PDF & Word export</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <FaCheck className="text-primary text-[10px]" />
-                    <span>No subscription required</span>
-                  </li>
-                </ul>
+                <p className="mt-1 text-xs font-semibold text-primary">{plan.perResume}</p>
               </div>
 
-              <button
-                onClick={() => handleCheckout(plan.id)}
-                disabled={loadingPlan !== null}
-                className={`w-full py-3 rounded-full text-xs font-bold transition-all shadow-md cursor-pointer select-none active:scale-[0.98] ${
-                  plan.popular ? "bg-primary text-white hover:bg-primary-hover shadow-primary/15" : "bg-bg-page hover:bg-bg-card text-primary-text border border-divider"
-                }`}
-              >
-                {loadingPlan === plan.id ? "Loading checkout..." : "Purchase Credits"}
-              </button>
+              <div className="flex flex-col flex-1 gap-4 p-6 pt-5">
+                <div className="text-xs font-bold text-primary-text bg-bg-page/60 border border-divider/40 rounded-md px-3 py-2 text-center">
+                  {plan.generations} resume generations
+                </div>
+
+                <p className="text-xs text-secondary-text leading-relaxed min-h-[2.5rem]">
+                  {plan.description}
+                </p>
+
+                <ul className="space-y-2 border-t border-divider/30 pt-4 text-xs font-medium text-secondary-text">
+                  {FEATURES.map((feature) => (
+                    <li key={feature} className="flex items-center gap-2">
+                      <FaCheck className="text-primary text-[10px] shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => handleCheckout(plan.id)}
+                  disabled={loadingPlan !== null}
+                  className={`mt-auto w-full py-3 rounded-full text-xs font-bold transition-colors active:scale-[0.98] disabled:opacity-60 ${
+                    plan.popular
+                      ? "bg-primary text-white hover:bg-primary-hover"
+                      : "bg-bg-page text-primary-text border border-divider hover:bg-bg-card"
+                  }`}
+                >
+                  {loadingPlan === plan.id ? "Loading checkout…" : "Purchase credits"}
+                </button>
+              </div>
             </div>
           ))}
         </div>
+
+        <p className="text-xs text-secondary-text text-center">
+          Secure checkout powered by Stripe. Credits never expire.
+        </p>
       </main>
 
       <Footer />
